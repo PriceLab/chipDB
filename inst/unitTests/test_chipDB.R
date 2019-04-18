@@ -23,10 +23,11 @@ test_constructor = function ()
 test_getHits <- function()
 {
    printf("--- test_getHits")
-   # GATA2 hg38 + some padding: chr3:128,474,823-128,512,102
-   tbl <- getHits(cdb, "chr3", 128474823, 128512102)
-   browser()
-   xyz <- 101
+     # small region on chr3 with hits in both databases
+   tbl <- getHits(cdb, chrom="chr3", start=48200000, end=48210700)
+   checkTrue(nrow(tbl) >  100)
+   checkTrue(all(c("chipAtlas", "remap") %in% tbl$database))
+   checkEquals(colnames(tbl), c("chrom", "start", "end", "tf", "tissueOrCellType", "score", "database"))
 
 } # test_getHits
 #------------------------------------------------------------------------------------------------------------------------

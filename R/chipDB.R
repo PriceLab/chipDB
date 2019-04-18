@@ -78,16 +78,35 @@ setMethod('getGenomeName', 'chipDB',
 setMethod('getHits', 'chipDB',
 
     function(obj, chrom, start, end, TF=NA_character_){
-       #browser()
-       #xyz <- 99
 
        query.1 <- sprintf("select * from peaks where chrom='%s' and start >= %d and endpos <= %d limit 3", chrom, start, end)
        tbl.1 <- dbGetQuery(obj@db.chipAtlas, query.1)
+       if(nrow(tbl.1) > 0){
+          experiments <- unique(tbl.1$experiment)
+          experiment.set <- sprintf("('%s')",  paste(experiments, collapse="','"))
+          query.experiments <- sprintf("select * from experiments where id in %s", experiment.set)
+          tbl.experiments <- dbGetQuery(obj@db.chipAtlas, query.experiments)
+          experiments.found <- intersect(experiments, tbl.experiments$id)
+          message(sprintf("found %d/%d of experiments named in peaks hits", length(experiments.found), length(experiments)))
+          tbl.1 <- merge(tbl.1, tbl.experiments[, c("id", "antigen", "cellTypeClass", "cellType")], by.x="experiment", by.y="id")
+          tbl.1 <- tbl.1[, c("chrom", "start", "endpos", "antigen", "cellTypeClass", "score")]
+          colnames(tbl.1) <- c("chrom", "start", "end", "tf", "tissueOrCellType", "score")
+          tbl.1$database <- "chipAtlas"
+          }
+
+       dim(tbl.1)
+
 
        query.2 <- sprintf("select * from chipseq where chrom='%s' and start >= %d and endpos <= %d", chrom, start, end)
        tbl.2 <- dbGetQuery(obj@db.remap, query.2)
-
-       tbl.2
+       dim(tbl.2)
+       tbl.2 <- tbl.2[, c("chrom", "start", "endpos", "tf", "name")]
+       colnames(tbl.2) <- c("chrom", "start", "end", "tf", "tissueOrCellType")
+       tbl.2$score <- 0
+       tbl.2$database <- "remap"
+       tbl.out <- rbind(tbl.1, tbl.2)
+       new.order <- order(tbl.out$start, decreasing=FALSE)
+       tbl.out[new.order,]
        })
 
 #------------------------------------------------------------------------------------------------------------------------

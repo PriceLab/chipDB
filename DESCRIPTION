@@ -1,8 +1,8 @@
 Package: chipDB
 Type: Package
 Title: Unified access to multiple (ISB local) ChIP-seq databases
-Version: 0.99.1
-Date: 2019-04-17
+Version: 0.99.2
+Date: 2019-04-18
 Author: Paul Shannon
 Maintainer:  <pshannon@systemsbiology.org>
 Depends: R (>= 3.5.0)
