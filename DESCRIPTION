@@ -1,0 +1,19 @@
+Package: chipDB
+Type: Package
+Title: Unified access to multiple (ISB local) ChIP-seq databases
+Version: 0.99.1
+Date: 2019-04-17
+Author: Paul Shannon
+Maintainer:  <pshannon@systemsbiology.org>
+Depends: R (>= 3.5.0)
+Suggests: RUnit
+Description: Unified access to multiple (ISB local) ChIP-seq databases
+License: Apache 2.0
+LazyLoad: yes
+NeedsCompilation: no
+Collate:
+  'chipDB.R'
+VignetteBuilder:
+  knitr
+RoxygenNote: 6.1.1
+Encoding: UTF-8
